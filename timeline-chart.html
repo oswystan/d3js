@@ -4,12 +4,16 @@
     <title>timeline chart</title>
     <script type="text/javascript" src="d3.min.js"></script>
     <style type="text/css">
+        body {
+            background-color: #fff;
+        }
         #timeline {
             width: 1000px;
             height: 600px;
             padding: 36px;
-            background-color: #f8f8f8;
-            box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+            background-color: #fefefe;
+            border:solid 1px #f1f1f1;
+            box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
         }
 
         #trend {
@@ -46,7 +50,7 @@
 
     function draw(data) {
         const width = 1000;
-        const height = 600;
+        const height = 300;
 
         let max_date = d3.max(data, function(d) { return d.date; });
         let min_date = d3.min(data, function(d) { return d.date; });
@@ -65,8 +69,8 @@
         let y = d3.scaleLinear().range([height, 0]).domain([min_val, max_val]);
 
         x_aixs.attr("transform", "translate(0," + height + ")")
-              .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%M:%S")).ticks(15));
-        y_aixs.call(d3.axisLeft(y).ticks(15));
+              .call(d3.axisBottom(x).ticks(10).tickFormat(d3.timeFormat("%M:%S")));
+        y_aixs.call(d3.axisLeft(y).ticks(10));
 
         x_aixs.selectAll("text").attr("style", "fill:#00b3b3");
         y_aixs.selectAll("text").attr("style", "fill:#00b3b3");
@@ -79,16 +83,15 @@
                             return y(d.val);
                         });
         path.attr("d", linePath(data));
-
     }
 
     setInterval(function(){
         data.push({date: new Date(), val: Math.floor(Math.random()*300) });
-        if (data.length > 100) {
+        if (data.length > 200) {
             data.splice(0, 1);
         }
         draw(data);
-    }, 300);
+    }, 1000);
 
 </script>
 
