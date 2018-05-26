@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>d3 dynamical bar-chart</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <svg width="684px" height="200px" style="border: solid 1px #bbb">
+    </svg>
+</body>
+
+<script type="text/javascript">
+    function drawbar(data) {
+        let update = d3.select("svg").selectAll("rect").data(data);
+        let enter = update.enter();
+        let exit = update.exit();
+        update.attr("height", function(d){
+            return d*10 + "px";
+        })
+        .attr("y", function(d, i) {
+            return 200-d*10;
+        });
+
+        enter.append("rect")
+            .attr("x", function(d, i){
+                return i*34+4;
+            })
+            .attr("y", function(d, i) {
+                return 200-d*10;
+            })
+            .attr("width", "30")
+            .attr("height", function(d) {
+                return d*10;
+            })
+            .attr("style", "fill:#888");
+
+        exit.remove();
+    }
+    let data = [];
+
+    //drawbar(data);
+    setInterval(function(){
+        data.push(Math.ceil(Math.random()*10));
+        drawbar(data);
+        if (data.length >= 20) {
+            data.splice(0, 1);
+        }
+    }, 1000);
+</script>
+
+</html>
