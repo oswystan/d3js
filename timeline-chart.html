@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>timeline chart</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <style type="text/css">
+        #timeline {
+            width: 1000px;
+            height: 600px;
+            padding: 36px;
+            background-color: #f8f8f8;
+            box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #trend {
+            stroke: #00cc66;
+            stroke-width: 3px;
+            fill: none;
+        }
+        #x-aixs>path, #y-aixs>path {
+            stroke:#00e6e6;
+            stroke-width: 3px;
+        }
+        #x-aixs line, #y-aixs line {
+            stroke:#00e6e6;
+            stroke-width: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <svg id="timeline">
+        <path id="trend"></path>
+        <g id="x-aixs"></g>
+        <g id="y-aixs"></g>
+    </svg>
+
+</body>
+
+<script type="text/javascript">
+
+    let data = [];
+    let _max_val = 0;
+    let _min_val = Number.MAX_VALUE;
+
+    function draw(data) {
+        const width = 1000;
+        const height = 600;
+
+        let max_date = d3.max(data, function(d) { return d.date; });
+        let min_date = d3.min(data, function(d) { return d.date; });
+        let max_val = d3.max(data, function(d) { return d.val; });
+        let min_val = d3.min(data, function(d) { return d.val; });
+
+        //adjust with history value
+        _max_val  = max_val  = d3.max([max_val, _max_val]);
+        _min_val  = min_val  = d3.min([min_val, _min_val]);
+
+        let svg = d3.select("#timeline");
+        let path = svg.select("#trend");
+        let x_aixs = svg.select("#x-aixs");
+        let y_aixs = svg.select("#y-aixs");
+        let x = d3.scaleTime().range([0, width]).domain([min_date, max_date]);
+        let y = d3.scaleLinear().range([height, 0]).domain([min_val, max_val]);
+
+        x_aixs.attr("transform", "translate(0," + height + ")")
+              .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%M:%S")).ticks(15));
+        y_aixs.call(d3.axisLeft(y).ticks(15));
+
+        x_aixs.selectAll("text").attr("style", "fill:#00b3b3");
+        y_aixs.selectAll("text").attr("style", "fill:#00b3b3");
+
+        let linePath = d3.line()
+                        .x(function(d, i) {
+                            return x(d.date);
+                        })
+                        .y(function(d) {
+                            return y(d.val);
+                        });
+        path.attr("d", linePath(data));
+
+    }
+
+    setInterval(function(){
+        data.push({date: new Date(), val: Math.floor(Math.random()*300) });
+        if (data.length > 100) {
+            data.splice(0, 1);
+        }
+        draw(data);
+    }, 300);
+
+</script>
+
+</html>
