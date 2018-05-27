@@ -9,13 +9,12 @@
         }
         #timeline {
             width: 1000px;
-            height: 600px;
+            height: 400px;
             padding: 36px;
             background-color: #fefefe;
             border:solid 1px #f1f1f1;
             box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
         }
-
         #trend {
             stroke: #00cc66;
             stroke-width: 3px;
@@ -29,23 +28,20 @@
             stroke:#00e6e6;
             stroke-width: 1px;
         }
-
     </style>
 </head>
-<body>
 
+<body>
     <svg id="timeline">
         <path id="trend"></path>
         <g id="x-aixs"></g>
         <g id="y-aixs"></g>
     </svg>
-
 </body>
 
 <script type="text/javascript">
-
     let data = [];
-    let _max_val = 0;
+    let _max_val = 10;
     let _min_val = Number.MAX_VALUE;
 
     function draw(data) {
@@ -87,12 +83,11 @@
 
     setInterval(function(){
         data.push({date: new Date(), val: Math.floor(Math.random()*300) });
-        if (data.length > 200) {
+        if (data.length > 100) {
             data.splice(0, 1);
         }
         draw(data);
     }, 1000);
-
 </script>
 
 </html>
